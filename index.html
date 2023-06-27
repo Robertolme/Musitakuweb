@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Musictaku Web</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .audio-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .audio-list li {
+      margin-bottom: 10px;
+    }
+    .audio-list li a {
+      text-decoration: none;
+      color: #333;
+    }
+    .audio-list li a i {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Musictaku Web</h1>
+
+ <div class="search-bar">
+    <!-- Formulario para ingresar el texto -->
+    <form id="searchForm" action="/process" method="POST">
+      <input type="text" name="text" id="searchInput" placeholder="Ingrese texto">
+      <button type="submit"><i class="fas fa-search"></i>Descargar</button>
+    </form>
+  </div>
+
+
+  <h2>Lista de audios disponibles:</h2>
+  <ul id="audioList" class="audio-list"></ul>
+
+
+
+  <script>
+    // Función para cargar la lista de audios disponibles
+    function loadAudioList() {
+      fetch('/audios')
+        .then(response => response.json())
+        .then(files => {
+          const audioList = document.getElementById('audioList');
+          audioList.innerHTML = '';
+
+          files.forEach(file => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = '/audios/' + file;
+            link.textContent = file;
+
+            const icon = document.createElement('i');
+            icon.classList.add('fas', 'fa-download');
+
+            link.prepend(icon);
+            listItem.appendChild(link);
+            audioList.appendChild(listItem);
+          });
+        })
+        .catch(error => {
+          console.error('Error al obtener la lista de audios:', error);
+        });
+    }
+
+    // Cargar la lista de audios al cargar la página
+    document.addEventListener('DOMContentLoaded', loadAudioList);
+  </script>
+</body>
+</html>
+
