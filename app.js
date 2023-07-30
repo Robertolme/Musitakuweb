@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const bodyParser = require('body-parser');
+const WebSocket = require('ws');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -43,28 +44,52 @@ app.get('/audios/:filename', (req, res, next) => {
   }
 });
 
+const wss = new WebSocket.Server({ port: 3000 });
 
 // Ruta para procesar el texto ingresado por el usuario
 app.post('/process', (req, res) => {
   const { text } = req.body;
   const pythonScriptPath = 'main.py';
 
+  //res.send('Descargando');
   // Ejecuta el programa Python con el texto y la ruta de salida como argumentos
   const pythonProcess = spawn('python3', [pythonScriptPath, text]);
-
-  pythonProcess.stdout.on('data', data => {
-    console.log('Salida del programa Python:', data.toString());
-  });
 
   pythonProcess.stderr.on('data', data => {
     console.error('Error en el programa Python:', data.toString());
   });
 
-  res.send('Proceso Python iniciado.');
+ let hasRedirected = false; 
+
+  pythonProcess.on('close', ()=>{
+	console.log('Proceso de python terminado');
+	    // Verificar si ya se ha enviado la redirección
+    if (!hasRedirected) {
+      hasRedirected = true; // Marcar que ya se ha enviado la redirección para evitar errores de encabezados duplicados
+      res.redirect('/'); // Redirigir al cliente a la página principal
+    }
+  });
+
+  pythonProcess.on('error', err => {
+	  console.log('error en el proceso de python',err);
+	      // Verificar si ya se ha enviado la redirección
+    if (!hasRedirected) {
+      hasRedirected = true; // Marcar que ya se ha enviado la redirección para evitar errores de encabezados duplicados
+      res.redirect('/'); // Redirigir al cliente a la página principal
+    }
+  });
+
+
+wss.clients.forEach(client => {
+    client.send(JSON.stringify({
+      message: 'Descargando',
+      type: 'download-in-progress'
+    }));
+  });
 });
 
 // Configuración del servidor
-const PORT = 3000;
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Servidor en ejecución en http://localhost:${PORT}`);
 });

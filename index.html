@@ -3,42 +3,78 @@
 <head>
   <title>Musictaku Web</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <style>
+    <style>
+    /* Estilos para mejorar la apariencia */
     body {
       font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background-color: #7577f6;
+      background-image: url("https://images.emojiterra.com/google/noto-emoji/unicode-15/bw/512px/1f3b6.png");
+      background-repeat: no-repeat;
+      background-position: center top 90px;;
     }
-    .audio-list {
-      list-style-type: none;
+    h1 {
+      color: #030101;
+    }
+    .search-bar {
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      align-items: center;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #0be696;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #030806;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    ul.audio-list {
+      list-style: none;
       padding: 0;
     }
-    .audio-list li {
+    ul.audio-list li {
       margin-bottom: 10px;
     }
-    .audio-list li a {
+    ul.audio-list a {
       text-decoration: none;
-      color: #333;
+      color: #030101;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 10px;
     }
-    .audio-list li a i {
+    ul.audio-list i {
       margin-right: 5px;
+    }
+    ul.audio-list a:visited {
+      color: #ee08bd; /* Cambiar a color visitado por defecto del navegador */
     }
   </style>
 </head>
-<body>
-  <h1>Musictaku Web</h1>
+<body background="fondo.jpg">
+  <h1><center>Musictaku Web </center></h1>
 
- <div class="search-bar">
+  <div class="search-bar">
     <!-- Formulario para ingresar el texto -->
     <form id="searchForm" action="/process" method="POST">
       <input type="text" name="text" id="searchInput" placeholder="Ingrese texto">
-      <button type="submit"><i class="fas fa-search"></i>Descargar</button>
+      <button type="submit" onclick="descargar()">
+        <i class="fas fa-search"></i>Descargar
+      </button>
     </form>
   </div>
 
-
   <h2>Lista de audios disponibles:</h2>
   <ul id="audioList" class="audio-list"></ul>
-
-
 
   <script>
     // Función para cargar la lista de audios disponibles
@@ -70,7 +106,15 @@
 
     // Cargar la lista de audios al cargar la página
     document.addEventListener('DOMContentLoaded', loadAudioList);
+
+  function descargar() {
+  console.log("Funciono");
+  location.href ='descargando.html';
+  document.getElementById('searchForm').submit();
+
+}
+
+
   </script>
 </body>
 </html>
-
